@@ -58,8 +58,14 @@ const NextPage = () => {
       return;
     }
 
+    try{
+      const response = await axios.patch(`https://nirmman-hackathon-two.vercel.app/shop/markpaid/${id}`);
+      console.log(response);
+    }
+    catch(err){}
+
     const data = {
-      name: "John Doe",
+      name: "Sahil",
       mobileNumber: 1234567890,
       amount: totalAmount,
       request_id: id
