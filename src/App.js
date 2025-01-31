@@ -1,27 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css"; // Import the CSS file
 
 const App = () => {
-  const [shops] = useState([
-    {
-      id: 1,
-      name: "Quick Print Studio",
-      theme: "blue",
-      description: "Fast & Professional Printing Solutions",
-    },
-    {
-      id: 2,
-      name: "Digital Print Hub",
-      theme: "green",
-      description: "Advanced Digital Printing Services",
-    },
-    {
-      id: 3,
-      name: "Premium Print Shop",
-      theme: "purple",
-      description: "High-Quality Premium Prints",
-    },
-  ]);
+  const [shops, setShops] = useState([]);
+
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await fetch(
+          "https://nirmman-hackathon-two.vercel.app/shop/getallshops"
+        );
+        const data = await response.json();
+        setShops(data);
+      } catch (error) {
+        console.error("Error fetching shops:", error);
+      }
+    };
+
+    fetchShops();
+  }, []);
 
   const handlePrintClick = (shopId) => {
     window.location.href = `https://print-frontend-ten.vercel.app/form/${shopId}`;
@@ -32,7 +29,7 @@ const App = () => {
       {/* Header */}
       <header>
         <h1>VIIT Printing Services</h1>
-        <p className="mt-2 text-lg text-gray-100">
+        <p className="mt-2 text-lg text-gray-600">
           Your one-stop solution for all printing needs
         </p>
       </header>
@@ -44,7 +41,7 @@ const App = () => {
           {shops.map((shop) => (
             <div key={shop.id} className="shop-card">
               <h2>{shop.name}</h2>
-              <p>{shop.description}</p>
+              <p>Phone: {shop.phn_number}</p>
               <button onClick={() => handlePrintClick(shop.id)}>
                 Print Now
               </button>
