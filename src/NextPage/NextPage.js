@@ -7,7 +7,7 @@ const NextPage = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [files, setFiles] = useState({});
   const [isUploading, setIsUploading] = useState(false);
-  const [isPaymentEnabled, setIsPaymentEnabled] = useState(false); // New state for enabling payment
+  const [isPaymentEnabled, setIsPaymentEnabled] = useState(false);
   const { id } = useParams();
 
   const handleFileChange = (event) => {
@@ -31,18 +31,18 @@ const NextPage = () => {
     formData.append("color", colorInput?.value);
     formData.append("front_back", printTypeInput?.value);
 
-    console.log("Sending FormData:", Object.fromEntries(formData.entries())); // Debugging
+    console.log("Sending FormData:", Object.fromEntries(formData.entries()));
 
     try {
       const response = await axios.post(
-      `https://nirmman-hackathon-two.vercel.app/print-request/uploadfiles/${id}`,
+       ` https://nirmman-hackathon-two.vercel.app/print-request/uploadfiles/${id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       console.log("Full API Response:", response.data);
       setTotalAmount(response.data || 0);
-      setIsPaymentEnabled(true); // Enable payment button after getting amount
+      setIsPaymentEnabled(true);
       alert("File uploaded successfully!");
     } catch (error) {
       console.error("Error uploading file:", error.response ? error.response.data : error.message);
@@ -52,16 +52,33 @@ const NextPage = () => {
     }
   };
 
-  const handlePayment = () => {
-    alert(`Redirecting to payment for ₹${totalAmount}`);
-    // Implement payment gateway integration here
+  const handlePayment = async () => {
+    if (totalAmount === 0) {
+      alert("Please get the total amount before proceeding to payment.");
+      return;
+    }
+
+    const data = {
+      name: "John Doe",
+      mobileNumber: 1234567890,
+      amount: totalAmount,
+    };
+
+    try {
+      const response = await axios.post("https://nirmman-hackathon-two.vercel.app/create-order", data);
+      console.log(response.data);
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.log("Error in payment:", error);
+      alert("Payment failed. Please try again.");
+    }
   };
 
   return (
     <div className="next-page-container">
       <h1>Upload Details</h1>
       <div className="print-column">
-        <h2>Upload File</h2>
+        <h2>Upload Image</h2>
         <div className="input-group">
           <label htmlFor="file">Choose File:</label>
           <input type="file" id="file" accept=".pdf" onChange={handleFileChange} />
@@ -85,21 +102,22 @@ const NextPage = () => {
           </select>
         </div>
       </div>
+
       <button className="upload-button" onClick={handleUpload} disabled={isUploading}>
         {isUploading ? "Uploading..." : "Get Final Amount"}
       </button>
+
       <button 
-  className="pay-now-button" 
-  onClick={handlePayment} 
-  disabled={!isPaymentEnabled || totalAmount === 0}
->
-  Pay Now
-</button>
+        className="pay-now-button" 
+        onClick={handlePayment} 
+        disabled={!isPaymentEnabled || totalAmount === 0}
+      >
+        Pay Now
+      </button>
 
       <div className="total-amount-container">
         <h2>Total Amount: ₹{totalAmount}</h2>
       </div>
-      
     </div>
   );
 };
