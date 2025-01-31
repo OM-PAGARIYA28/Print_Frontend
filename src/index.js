@@ -6,6 +6,7 @@ import App from './App';
 import FormPage from './FormPage/FormPage'; // Import the FormPage component
 import NextPage from './NextPage/NextPage'; // Import the NextPage component
 import reportWebVitals from './reportWebVitals';
+import PaymentStatus from './PaymentsPage/PaymentStatus';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,6 +16,8 @@ root.render(
       <Route path="/" element={<App />} />
         <Route path="/form/:id" element={<FormPage />} /> {/* Pass param to FormPage */}
         <Route path="/next-page/:id" element={<NextPage />} /> {/* Pass param to NextPage */}
+        <Route path="/status/:id" element={<PaymentStatus />} /> {/* Pass param to NextPage */}
+
       </Routes>
     </Router>
   </React.StrictMode>
